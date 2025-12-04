@@ -10,6 +10,8 @@ import {
 import { AppService } from './app.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
+import { User } from './user.decorator';
+import { UserEntity } from './user.entity';
 
 @Controller()
 export class AppController {
@@ -57,5 +59,14 @@ export class AppController {
   ) {
     console.log(file);
     return { message: 'PNG file uploaded successfully' };
+  }
+
+  @Get('user/:id')
+  findOne(
+    @User()
+    user: UserEntity,
+  ) {
+    console.log(user);
+    return user;
   }
 }
