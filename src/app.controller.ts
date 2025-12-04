@@ -6,6 +6,7 @@ import {
   Post,
   Req,
   Res,
+  Session,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
@@ -15,6 +16,7 @@ import { diskStorage } from 'multer';
 import { User } from './user.decorator';
 import { UserEntity } from './user.entity';
 import type { Response, Request } from 'express'; // ← type only import
+import session from 'express-session';
 @Controller()
 export class AppController {
   constructor(private readonly appService: AppService) {}
@@ -85,5 +87,21 @@ export class AppController {
   ) {
     response.cookie('userId', '133213212');
     response.send('Cookie saved successfully');
+  }
+
+  @Get('login')
+  loginUser(@Session() session: Record<string, any>) {
+    session.user = { id: 1, username: 'Jane' };
+    return 'Logged in';
+  }
+
+  @Get('profile')
+  profile(@Session() session: Record<string, any>) {
+    const user = session.user;
+    if (user) {
+      return `Hello, ${user.username}`;
+    } else {
+      return 'Not logged in';
+    }
   }
 }
