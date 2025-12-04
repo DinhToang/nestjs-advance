@@ -4,6 +4,8 @@ import {
   HttpStatus,
   ParseFilePipeBuilder,
   Post,
+  Req,
+  Res,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
@@ -12,7 +14,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { User } from './user.decorator';
 import { UserEntity } from './user.entity';
-
+import type { Response, Request } from 'express'; // ← type only import
 @Controller()
 export class AppController {
   constructor(private readonly appService: AppService) {}
@@ -68,5 +70,20 @@ export class AppController {
   ) {
     console.log(user);
     return user;
+  }
+
+  @Get('get-cookie')
+  finndAll(@Req() req: Request) {
+    console.log(req.cookies);
+    return req.cookies;
+  }
+
+  @Get('set-cookie')
+  setCookie(
+    @Res({ passthrough: true })
+    response: Response,
+  ) {
+    response.cookie('userId', '133213212');
+    response.send('Cookie saved successfully');
   }
 }
